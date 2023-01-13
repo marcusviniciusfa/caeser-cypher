@@ -1,32 +1,39 @@
 class CaeserCypher {
     #alphabet
-    #module
 
     constructor() {
       this.#alphabet = 'abcdefghijklmnopqrstuvwxyz'
-      this.#module = this.#alphabet.length
       Object.freeze(this.#alphabet)
-      Object.freeze(this.#module)
     }
 
     #validateMessage (message) {
+      if (typeof message != 'string') {
+        throw new Error('❌ "message" argument should be a string type')
+      }
       if (!/^[a-zA-z]+$/g.test(message)) {
-        throw new Error('❌ "message" argument is not a valid. Enter only alphabetic characters')
+        throw new Error('❌ "message" argument is not a valid. characters should be alphabetic only')
       }
     }
 
     #validateKey (key) {
-      if (isNaN(key) || typeof key != 'number') {
-        throw new Error('❌ "key" argument is not a valid. Enter a numeric type value')
+      if (typeof key != 'number' && typeof key != 'string') {
+        throw new Error('❌ "key" argument should be a number type or string type')
+      }
+      if (typeof key == 'string' && isNaN(Number(key))) {
+        throw new Error('❌ "key" should be contain a numeric value')
       }
     }
 
     #validateProps(message, key) {
-      message = message.toLowerCase()
-      key = Number.parseInt(key)
       this.#validateMessage(message)
       this.#validateKey(key)
+      message = message.toLowerCase()
+      key = Number.parseInt(key)
       return [message, key]
+    }
+
+    #shiftToNewChar(index, offset) {
+      return this.#alphabet.charAt((index + offset) % this.#alphabet.length)
     }
 
     encrypt (message, key) {
@@ -36,7 +43,7 @@ class CaeserCypher {
         let newChar = char
         const charIndexAtAlphabet = this.#alphabet.indexOf(char)
         if (charIndexAtAlphabet >= 0) {
-          newChar = this.#alphabet.charAt((charIndexAtAlphabet + key) % this.#module)
+          newChar = this.#shiftToNewChar(charIndexAtAlphabet, key)
           encryptedMessage += newChar
         }
       }

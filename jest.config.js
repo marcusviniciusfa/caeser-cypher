@@ -3,8 +3,7 @@
  * https://jestjs.io/docs/configuration
  */
 
-export default {
-  clearMocks: true,
+module.exports = {
   coverageProvider: "v8",
   testEnvironment: 'jest-environment-node'
 };
